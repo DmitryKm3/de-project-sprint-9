@@ -1,0 +1,46 @@
+# Default values for app.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 1
+
+image:
+  repository: cr.yandex/crpke7l4gbneotejo4hk/dds_service
+  pullPolicy: IfNotPresent
+  tag: v2025-09-14-r4
+
+containerPort: "5000"
+
+config:
+  KAFKA_HOST: rc1a-qhklgd4in46f7q58.mdb.yandexcloud.net
+  KAFKA_PORT: "9091"
+  KAFKA_CONSUMER_USERNAME: producer_consumer
+  KAFKA_CONSUMER_PASSWORD: "12345678"
+  KAFKA_CONSUMER_GROUP: test_consumer
+  KAFKA_SOURCE_TOPIC: stg-service-orders
+  KAFKA_DESTINATION_TOPIC: dds-service-orders
+
+
+  PG_WAREHOUSE_HOST: rc1b-hvidpj1dvjrimouj.mdb.yandexcloud.net
+  PG_WAREHOUSE_PORT: "6432"
+  PG_WAREHOUSE_DBNAME: sprint9dwh
+  PG_WAREHOUSE_USER: admin1
+  PG_WAREHOUSE_PASSWORD: "12345678"
+
+  REDIS_HOST: rc1d-9qedbbsvvhuqe7mr.mdb.yandexcloud.net
+  REDIS_PORT: "6380"
+  REDIS_PASSWORD: "12345678"
+
+# imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+podAnnotations: {}
+
+resources:
+  limits:
+    cpu: 100m
+    memory: 128Mi
+  requests:
+    cpu: 100m
+    memory: 128Mi

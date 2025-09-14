@@ -1,14 +1,46 @@
 version: "3.9"
 
 services:
+  stg-service:
+    build:
+      context: ./service_stg
+      network: host
+    image: stg-service:local
+    container_name: stg-service_container
+    environment:
+      FLASK_APP: ${STG_SERVICE_APP_NAME:-stg-service}
+      DEBUG: ${STG_SERVICE_DEBUG:-True}
+
+      KAFKA_HOST: ${KAFKA_HOST}
+      KAFKA_PORT: ${KAFKA_PORT}
+      KAFKA_CONSUMER_USERNAME: ${KAFKA_CONSUMER_USERNAME}
+      KAFKA_CONSUMER_PASSWORD: ${KAFKA_CONSUMER_PASSWORD}
+      KAFKA_CONSUMER_GROUP: ${KAFKA_CONSUMER_GROUP}
+      KAFKA_SOURCE_TOPIC: ${KAFKA_SOURCE_TOPIC}
+      KAFKA_DESTINATION_TOPIC: ${KAFKA_STG_SERVICE_ORDERS_TOPIC}
+
+      PG_WAREHOUSE_HOST: ${PG_WAREHOUSE_HOST}
+      PG_WAREHOUSE_PORT: ${PG_WAREHOUSE_PORT}
+      PG_WAREHOUSE_DBNAME: ${PG_WAREHOUSE_DBNAME}
+      PG_WAREHOUSE_USER: ${PG_WAREHOUSE_USER}
+      PG_WAREHOUSE_PASSWORD: ${PG_WAREHOUSE_PASSWORD}
+
+      REDIS_HOST: ${REDIS_HOST}
+      REDIS_PORT: ${REDIS_PORT}
+      REDIS_PASSWORD: ${REDIS_PASSWORD}
+    network_mode: "bridge"
+    ports:
+      - "5011:5000"
+    restart: unless-stopped
+
   dds_service:
     build:
       context: ./service_dds
       network: host
-    image: dds_service:local
-    container_name: dds_service_container
+    image: dds-service:local
+    container_name: dds-service_container
     environment:
-      FLASK_APP: ${DDS_APP:-dds_service}
+      FLASK_APP: ${DDS_APP:-dds-service}
       DEBUG: ${DDS_DEBUG:-True}
 
       KAFKA_HOST: ${KAFKA_HOST}
@@ -34,10 +66,10 @@ services:
     build:
       context: ./service_cdm
       network: host
-    image: cdm_service:local
-    container_name: cdm_service_container
+    image: cdm-service:local
+    container_name: cdm-service_container
     environment:
-      FLASK_APP: ${CDM_SERVICE_APP:-cdm_service}
+      FLASK_APP: ${CDM_SERVICE_APP:-cdm-service}
       DEBUG: ${CDM_SERVICE_DEBUG:-True}
 
       KAFKA_HOST: ${KAFKA_HOST}
@@ -46,7 +78,7 @@ services:
       KAFKA_CONSUMER_PASSWORD: ${KAFKA_CONSUMER_PASSWORD}
       KAFKA_CONSUMER_GROUP: ${KAFKA_CONSUMER_GROUP}
       KAFKA_SOURCE_TOPIC: ${KAFKA_DDS_SERVICE_ORDERS_TOPIC}
-
+     
       PG_WAREHOUSE_HOST: ${PG_WAREHOUSE_HOST}
       PG_WAREHOUSE_PORT: ${PG_WAREHOUSE_PORT}
       PG_WAREHOUSE_DBNAME: ${PG_WAREHOUSE_DBNAME}
